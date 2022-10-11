@@ -41,7 +41,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-        self._set_headers(200)
+        
         response = {}  # Default response
 
         # Parse the URL and capture the tuple that is returned
@@ -50,7 +50,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "animals":
             if id is not None:
                 response = get_single_animal(id)
-
+                if response is None:
+                    self._set_headers(404)
+                    response = { "message": f"Animal {id} is out playing right now" }
+                else: self._set_headers(200)
+                   
             else:
                 response = get_all_animals()
 
@@ -75,7 +79,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             else:
                 response = get_all_customers()
 
-        self.wfile.write(json.dumps(response).encode())
+        self.wfile.write(f"{response}".encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
@@ -88,7 +92,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(post_body)
 
         # Parse the URL
-        (resource) = self.parse_url(self.path)
+        (resource, id) = self.parse_url(self.path)
 
         # Initialize new animal
         new_animal = None

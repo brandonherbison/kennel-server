@@ -2,5 +2,14 @@
     "python.formatting.provider": "autopep8",
     "python.formatting.autopep8Path": "/Users/brandonherbison/.pyenv/shims/autopep8",
     "python.linting.pylintEnabled": true,
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "kennel",
+            "database": "./kennel.sqlite3"
+        }
+    ],
  
 }
