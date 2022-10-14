@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Employee, Location
+from models import Employee, Location, Animal
 EMPLOYEES = [
     {
         "id": 1,
@@ -65,13 +65,26 @@ def get_single_employee(id):
         # Use a ? parameter to inject a variable's value
         # into the SQL statement.
         db_cursor.execute("""
-        SELECT
-            a.id,
-            a.name,
-            a.address,
-            a.location_id
-        FROM employee a
-        WHERE a.id = ?
+        SELECT 
+            e.id,
+            e.name, 
+            e.address, 
+            e.location_id,
+            l.name location_name, 
+            l.address location_address,
+            a.name animal_name,
+            a.breed,
+            a.status,
+            a.location_id,
+            a.customer_id
+        FROM Employee e
+        JOIN Location l
+            ON l.id = e.location_id
+        JOIN EmployeeAnimals ea
+            ON  e.id = ea.employee_id
+        JOIN Animal a
+            ON ea.animal_id = a.id
+        WHERE e.id = ?
         """, ( id, ))
 
         # Load the single result into memory
@@ -80,6 +93,16 @@ def get_single_employee(id):
         # Create an employee instance from the current row
         employee = Employee(data['id'], data['name'], data['address'],
                             data['location_id'])
+        location = Location(data['location_id'], data['location_name'], data['location_address'])
+        
+        animal = Animal(data['id'], data['animal_name'], data['breed'],
+                            data['status'], data['location_id'],
+                            data['customer_id'])
+        
+        employee.location = location.__dict__
+        employee.animal = animal.__dict__
+        
+
 
         return json.dumps(employee.__dict__)
 

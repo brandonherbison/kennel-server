@@ -103,4 +103,60 @@ JOIN Location l
 JOIN Customer c
 	ON c.id = a.customer_id
 
-SELECT * FROM Animal ORDER BY id DESC;
+DELETE FROM EmployeeAnimals WHERE id > 3;
+
+CREATE TABLE `EmployeeAnimals` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`animal_id`	INTEGER NOT NULL,
+	`employee_id`	INTEGER NOT NULL,
+	FOREIGN KEY(`animal_id`) REFERENCES `Animal`(`id`),
+	FOREIGN KEY(`employee_id`) REFERENCES `Employee`(`id`)
+);
+
+INSERT INTO `EmployeeAnimals` VALUES (null, 1, 2);
+INSERT INTO `EmployeeAnimals` VALUES (null, 3, 5);
+INSERT INTO `EmployeeAnimals` VALUES (null, 34, 3);
+INSERT INTO `EmployeeAnimals` VALUES (null, 7, 1);
+
+SELECT
+	a.id,
+	a.name,
+	a.breed,
+	a.status,
+	a.location_id,
+	a.customer_id,
+	l.name location_name,
+	l.address location_address,
+	c.name customer_name,
+	c.address customer_address,
+	c.email customer_email,
+	c.password customer_password,
+	m.name animal_name
+FROM animal a
+JOIN Location l
+	ON l.id = a.location_id
+JOIN Customer c
+	ON c.id = a.customer_id
+WHERE a.id = 3
+
+
+SELECT 
+	e.id,
+	e.name, 
+	e.address, 
+	e.location_id,
+	l.name location_name, 
+	l.address location_address,
+	a.name animal_name,
+	a.breed,
+	a.status,
+	a.location_id,
+	a.customer_id
+FROM Employee e
+JOIN Location l
+	ON l.id = e.location_id
+JOIN EmployeeAnimals ea
+	ON  e.id = ea.employee_id
+JOIN Animal a
+	ON ea.animal_id = a.id
+WHERE e.id = ?
